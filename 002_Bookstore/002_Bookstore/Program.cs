@@ -39,6 +39,7 @@ namespace _002_Bookstore
             peso = Convert.ToDouble(Console.ReadLine(), CultureInfo.InvariantCulture);
             //peso = float.Parse(Console.ReadLine());
             //peso = Convert.ToDouble(Console.ReadLine().Replace(".", ","), CultureInfo.InvariantCulture);
+            double.TryParse(Console.ReadLine(), out double pesoDue);
 
             Console.WriteLine("Inserisci la larghezza in cm");
             larghezza = Convert.ToDouble(Console.ReadLine(), CultureInfo.InvariantCulture);
