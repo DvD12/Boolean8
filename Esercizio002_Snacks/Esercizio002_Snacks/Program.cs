@@ -155,6 +155,7 @@
                 int somma = 0;
                 for (int i = 0; i < numeri.Length; i++)
                 {
+                    Array.Resize
                     int numero = 0;
                     while (numero <= 0)
                     {
