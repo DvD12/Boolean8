@@ -5,12 +5,20 @@
         public int Base { get; set; }
         public int Altezza { get; set; }
     }
-
+    public enum Colore // enum è un integer internamente
+    {
+        Bianco, // potrei scrivere... = 10,
+        Rosso,
+        Giallo,
+        Nero,
+        Verde,
+        Arancione,
+    }
     public class Auto
     {
         public static int NumeroAutoProdotte;
 
-        public string Colore;
+        public Colore Colore;
         // Questa sintassi get; set; è equivalente alla lettura e alla scrittura più generale possibile (vedi Velocità)
         // In questo modo crea automaticamente una backing field "numeroPorte" che non dobbiamo esplicitare
         // MA se esplicitiamo anche uno solo tra get e set DOBBIAMO fare uso di una variabile d'appoggio che non sarebbe più implicita
@@ -75,16 +83,16 @@
         public Auto() // Costruttore
         {
             NumeroAutoProdotte++;
-            this.Colore = "invisible";
+            this.Colore = Colore.Verde;
             NumeroPorte = 100;
             Targa = "asd";
         }
-        public Auto(string colore, int numeroPorte) : this() // tramite "this()" sto richiamando Auto()
+        public Auto(Colore colore, int numeroPorte) : this() // tramite "this()" sto richiamando Auto()
         {
-            Colore = colore;
-            NumeroPorte = numeroPorte;
+            this.Colore = colore;
+            this.NumeroPorte = numeroPorte;
         }
-        public Auto(string colore, string targa) : this(colore, 4) // tramite "this()" sto richiamando Auto(string, int)
+        public Auto(Colore colore, string targa) : this(colore, 4) // tramite "this()" sto richiamando Auto(string, int)
         {
             this.Colore = colore;
             SetTarga(targa);
@@ -146,10 +154,10 @@
     {
         static void Main(string[] args)
         {
-            Auto nuovaAuto = new Auto("rosso", 4);
+            Auto nuovaAuto = new Auto(Colore.Rosso, 4);
             Auto.StampaNumeroAutoProdotte();
             nuovaAuto.NumeroPorte = 4;
-            nuovaAuto.Colore = "rosso";
+            nuovaAuto.Colore = Colore.Rosso;
             nuovaAuto.Accendi();
             nuovaAuto.Ripara();
             nuovaAuto.Revisiona();
@@ -160,11 +168,11 @@
 
             Auto nuovaAuto2 = new Auto();
             Auto.StampaNumeroAutoProdotte();
-            nuovaAuto2.Colore = "verde";
+            nuovaAuto2.Colore = Colore.Verde;
             nuovaAuto2.NumeroPorte = 5;
             nuovaAuto2.Accendi();
             
-            Auto[] autos = { new Auto("giallo", 4), new Auto("nero", 2) };
+            Auto[] autos = { new Auto(Colore.Giallo, 4), new Auto(Colore.Nero, 2) };
             foreach (var auto in autos)
                 auto.Accendi();
         }
