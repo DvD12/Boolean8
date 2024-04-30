@@ -8,7 +8,7 @@ namespace Esercizio005_Biblioteca
 {
     public class Biblioteca
     {
-        public Dictionary<string, Documento> Documenti { get; set; } = new();
+        public Dictionary<string, Documento> Documenti { get; set; } = new(); // La chiave dev'essere il codice
         public List<Utente> Utenti { get; set; } = new();
         public List<Prestito> Prestiti { get; set; } = new();
 
@@ -16,6 +16,8 @@ namespace Esercizio005_Biblioteca
         {
             if (Documenti.ContainsKey(d.Codice) == false) // O(log(n))
                 Documenti.Add(d.Codice, d);
+
+            Documenti[d.Codice] = d;
         }
 
         public void AggiungiUtente(Utente utente)

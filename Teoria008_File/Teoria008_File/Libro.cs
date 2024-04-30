@@ -12,11 +12,20 @@ namespace Teoria008_File
         public string Autore { get; set; }
         public int Anno { get; set; }
 
-        public Libro(string titolo, string autore, int anno)
+        public Libro(string titolo, string autore, int anno = 1900)
         {
             this.Titolo = titolo;
             this.Autore = autore;
-            this.Anno = anno;
+            try
+            {
+                if (anno < 1900)
+                    throw new Exception("L'anno deve essere maggiore di 1900");
+                this.Anno = anno;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         public override string ToString()

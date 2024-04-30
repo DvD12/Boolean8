@@ -2,6 +2,10 @@
 
 namespace Teoria008_File
 {
+    public class CustomException : Exception
+    {
+        public override string Message => "My custom exception";
+    }
     internal class Program
     {
         static void Main(string[] args)
@@ -12,7 +16,7 @@ namespace Teoria008_File
             var libri = LeggiDaTesto(path);
             foreach (var libro in libri)
                 Console.WriteLine(libro.ToString());
-            ScriviInTesto(libri, path2);
+            //ScriviInTesto(libri, path2);
         }
 
         public static void LeggiDaJson()
@@ -36,7 +40,7 @@ namespace Teoria008_File
             List<Libro> libriPreferiti = new List<Libro>();
             //var text = File.ReadAllText(path);
             var stream = File.OpenText(path);
-
+            
             int i = 0;
             while (stream.EndOfStream == false) // equivale a dire che la posizione dello stream è MINORE della lunghezza dei bytes dello stream
             {
@@ -49,19 +53,39 @@ namespace Teoria008_File
                     continue;
 
                 // Converto ogni linea in un libro
+                string titolo = "N/A";
+                string autore = "N/A";
+                int anno = 0;
                 try
                 {
                     var dati = linea.Split(',');
-                    string titolo = dati[0];
-                    string autore = dati[1];
-                    int anno = int.Parse(dati[2]);
+                    anno = int.Parse(dati[2]);
+                    titolo = dati[0];
+                    autore = dati[1];
+                    if (dati.Length > 3)
+                        throw new Exception("Ci sono più di 3 campi (Titolo, Autore, Anno)");
 
-                    Libro l = new Libro(titolo, autore, anno);
-                    libriPreferiti.Add(l);
+                    List<int> campiVuoti = new();
+                    for (int j = 0; j < dati.Length; j++)
+                        if (string.IsNullOrWhiteSpace(dati[j]))
+                            campiVuoti.Add(j);
+
+                    if (campiVuoti.Count > 0)
+                    {
+                        string indici = "";
+                        foreach (var indice in campiVuoti)
+                            indici += $"{indice + 1}, ";
+                        throw new Exception($"I campi nelle posizioni {indici} non possono essere vuoti");
+                    }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    Libro l = new Libro(titolo, autore, anno);
+                    libriPreferiti.Add(l);
                 }
             }
 
