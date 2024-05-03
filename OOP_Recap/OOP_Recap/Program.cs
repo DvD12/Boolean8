@@ -45,8 +45,7 @@
         {
             Console.WriteLine("Inserisci titolo evento");
             string titolo = Console.ReadLine();
-            Evento e = new Evento();
-            e.Titolo = titolo;
+
             DateTime data = GetDateFromInput("Inserisci data evento");
 
             int numPosti = GetFromInput("Inserisci numero posti totali");

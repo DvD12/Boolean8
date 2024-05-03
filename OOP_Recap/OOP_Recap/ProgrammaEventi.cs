@@ -52,7 +52,7 @@ namespace OOP_Recap
 
         public string GetTitoloAndEventiText()
         {
-            return $"{this.Titolo}{Environment.NewLine}{GetEventsText(this.Eventi)}";
+            return $"{this.Titolo}{Environment.NewLine}{ProgrammaEventi.GetEventsText(this.Eventi)}";
         }
     }
 }
