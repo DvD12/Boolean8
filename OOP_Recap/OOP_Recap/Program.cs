@@ -1,13 +1,33 @@
 ﻿namespace OOP_Recap
 {
+    public static class Extensions
+    {
+        public static T GetRandomElement<T>() where T : Enum
+        {
+            var values = Enum.GetValues(typeof(T)).Cast<T>().ToList();
+            var rand = new System.Random();
+            var i = rand.Next(0, values.Count);
+            return values[i];
+        }
+    }
+
+    public enum Colore
+    {
+        Giallo,
+        Verde,
+        Rosso,
+        Nero,
+        Bianco
+    }
+
     internal class Program
     {
         static void Main(string[] args)
         {
             try
             {
-                
-
+                var coloreRandom = Extensions.GetRandomElement<Colore>();
+                Console.WriteLine((int)coloreRandom);
                 Console.WriteLine("Fornisci il titolo del programma eventi");
                 string programmaTitolo = Console.ReadLine();
                 ProgrammaEventi programma = new ProgrammaEventi(programmaTitolo);
