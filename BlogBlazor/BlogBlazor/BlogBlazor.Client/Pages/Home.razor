@@ -1,0 +1,23 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@foreach (var profilo in Profili)
+{
+    <BlogBlazor.Client.Shared.ProfileComponent Profile="profilo" />
+}
+
+@code
+{
+    List<Profilo> Profili;
+    protected override void OnInitialized()
+    {
+        Profili = new List<Profilo>();
+        Profili.Add(new Profilo("Pinco", "Panco"));
+        Profili.Add(new Profilo("Tizio", "Caio"));
+    }
+}

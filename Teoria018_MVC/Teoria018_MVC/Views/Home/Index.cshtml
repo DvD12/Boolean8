@@ -1,35 +1,36 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using Newtonsoft.Json
 @{
-    ViewData["Title"] = "Home Page";
-    Layout = "LayoutCustom";
-    Profile p = new Profile("Pippo", "Franco", 72);
-    string json = JsonConvert.SerializeObject(p, Formatting.Indented);
-    string jsonHtml = json.Replace("\r\n", "<br />").Replace("{", "").Replace("}", "");
-
     List<Profile> profili = new List<Profile>();
-    //profili.Add()
+    profili.Add(new Profile("Pinco", "Panco", 99));
+    profili.Add(new Profile("Caio", "Sempronio", 18));
+    profili.Add(new Profile("Tizio", "Caio", 60));
+
+    string headerBackgroundColor = "#F00000";
+
+    int MiaFunzione(int n)
+    {
+        return n + 1;
+    }
+}
+
+@section PreBody
+{
+    <div style="background: @headerBackgroundColor; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+        <h1 style="color: #FFFFFF">IL MIO INDICE</h1>
+    </div>
+    @MiaFunzione(4)
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core </a>.</p>
     <div>
-        <h1>Al momento del caricamento di questa pagina sono le @DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")</h1>
-        <p>Il mio nome è @p.Name @p.Lastname</p>
-        <p>@json</p>
-        <p>@Html.Raw(jsonHtml)</p>
-        <p class="alert alert-danger">
-            OCCHIO, sono @p.Name @p.Lastname
-        </p>
-        @{
-            <div style="display: flex">
-            
+        @foreach (var profilo in profili)
+        {
+            <div class="row">
+                <div class="col"><p>@profilo.Name</p></div>
+                <div class="col">@profilo.Lastname</div>
+                <div class="col">@profilo.Age</div>
             </div>
-            foreach (var profilo in profili)
-            {
-                
-            }
         }
     </div>
 </div>

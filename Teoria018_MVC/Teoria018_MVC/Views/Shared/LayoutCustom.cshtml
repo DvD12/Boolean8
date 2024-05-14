@@ -1,8 +1,17 @@
-﻿<h1>TITOLONE</h1>
-@{
-    ViewData["Title"] = "LA APP";
-}
-<title>@ViewData["Title"]</title>
-<h1>Il mio H1 è @ViewData["Title"]</h1>
-<h2>Il mio H2234234234 è @ViewData["Titl"]</h2>
-@RenderBody()
+﻿<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<main>
+    @Html.Partial("Banner")
+    <div class="row">
+        <div class="col">
+            @RenderSection("PreBody", required: false)
+        </div>
+    </div>
+    @RenderBody()
+</main>
+<footer>
+    <div>
+        <a href="@Url.Action("Privacy", "Home")">GO TO PRIVACY</a>
+    </div>
+</footer>

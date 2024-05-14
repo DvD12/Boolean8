@@ -9,6 +9,11 @@ namespace Teoria018_MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Installo il pacchetto Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+            // Con questo codice possiamo modificare il codice razor e aggiornare la pagina a runtime e vedere le modifiche
+            builder.Services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
