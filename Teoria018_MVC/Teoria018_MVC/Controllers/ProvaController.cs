@@ -8,10 +8,5 @@ namespace Teoria018_MVC.Controllers
         {
             return View();
         }
-        public void ShowPizza(int id)
-        {
-            Pizza p = GetMyPizza(id);
-            return View(p);
-        }
     }
 }
