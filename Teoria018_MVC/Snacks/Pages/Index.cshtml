@@ -1,10 +1,147 @@
 ﻿@page
 @model IndexModel
+<!--
+1. Dichiarare una variabile valorizzandola con il nostro nome.
+Dichiarare un'altra variabile valorizzandola con il nostro cognome.
+Stampare il nostro nome e cognome all'interno di un tag h2.
+2. Creare una funzione che stampa la somma dei numeri che vanno da 1 a n (con n passato come parametro - n incluso)
+Stampare dentro uno span il risultato.
+3. Contare quante volte la lettera a è presente nalla frase "nel mezzo del cammin di nostra vita" e stampare questo valore in pagina
+4. Creare una List<int> di 20 numeri interi (generati random da 1 a 90, 1 e 90 inclusi) e mostrare in pagina solo i numeri compresi tra 20 e 70
+5. Stampare in pagina la data e l'ora attuale (usando la classe DateTime) con il formato anno-mese-giorno ore:minuti:secondi
+6. Partendo dalla data di oggi (usando la classe DateTime) stampare in pagina
+a. la data di 7 giorni fa
+b. che giorno della settimana è oggi (il risultato dovrà  essere il nome del giorno (Lunedì, Martedì, ...)
+c. che giorno della settimana sarà  nello stesso giorno e mese di oggi ma tra un anno (il risultato dovrÃ  essere il nome del giorno (Lunedì, Martedì, ...)
+-->
 @{
-    ViewData["Title"] = "Home page";
+    // SNACK 1
+    // ===========
+
+    var nome = "Davide";
+    var cognome = "Benedetti";
+    <h2>@nome @cognome</h2>
+
+    // SNACK 2
+    // ===========
+
+    void StampaNumeri(int n)
+    {
+        int somma = 0;
+        for (int i = 1; i <= n; i++)
+            somma += i;
+
+        <span>La somma dei numeri da 1 a @n è @somma</span>
+    }
+
+    StampaNumeri(10);
+
+    // SNACK 3
+    // ===========
+
+    int ContaLetteraA(string frase)
+    {
+        int i = 0;
+        foreach (var lettera in frase)
+            if (lettera == 'a')
+                i++;
+
+        return i;
+    }
+    int ContaLetteraConLinq(string frase)
+    {
+        return frase.Count(x => x == 'a');
+    }
+
+    string frase = "Nel mezzo del cammin di nostra vita";
+    <p>Nella frase @frase abbiamo @ContaLetteraA(frase) volte la lettera 'a'</p>
+
+    // SNACK 4
+    // ===========
+
+    List<int> numeriRandom = new List<int>();
+    System.Random rng = new Random();
+
+    for (int i = 0; i < 20; i++)
+        numeriRandom.Add(rng.Next(1, 91));
+
+    foreach (var num in numeriRandom)
+    {
+        if (num >= 20 && num <= 70)
+        {
+            <p>@num</p>
+        }
+    }
+
+    // PARENTESI!!!!11!1oneone
+    // E se volessi modificare numeriRandom?
+
+    //foreach (var num in numeriRandom) // ECCEZIONE: la lista viene modificata all'interno del foreach
+    //    if (num >= 20 && num <= 70)
+    //        numeriRandom.Remove(num); // inefficiente: Remove() CERCA l'elemento dato nella lista
+
+    // ANCHE QUESTA è problematica, perché la 'i' incrementa anche se rimuovo un elemento
+    // perdendomi quindi dei numeri da controllare
+    for (int i = 0; i < numeriRandom.Count; i++)
+    {
+        int num = numeriRandom[i];
+        if (num >= 20 && num <= 70)
+            numeriRandom.RemoveAt(i); // efficiente: sa esattamente in quale posizione rimuovere l'elemento
+    }
+
+    // Le funzioni LINQ sono di tipo 'lazy loaded': CALCOLANO il risultato a ogni accesso
+    var numeriCompresiTra20E70 = numeriRandom.Where(x => x >= 20 && x <= 70);
+    // TL;DR: la soluzione per avere un risulato "definitivo" è
+    // var numeriCompresiTra20E70 = numeriRandom.Where(x => x >= 20 && x <= 70).ToList();
+    // SPIEGAZIONE:
+    // Se io facessi debug su questo foreach e premessi F11 ogni volta, noto che la funzione lambda interna al where viene eseguita:
+    // non è stata eseguita durante la dichiarazione del Where()
+    // Quindi se accedessi a numeriCompresiTra20E70 100 volte, tale calcolo verrebbe rifatto 100 volte!
+    foreach (var num in numeriCompresiTra20E70)
+    {
+        Console.WriteLine(num);
+    }
+    // Tale comportamento potrebbe essere voluto: dal momento che il calcolo è rifatto al momento dell'uso,
+    // se numeriRandom cambiasse anche il risultato sarebbe aggiornato:
+    numeriRandom.Clear();
+    numeriRandom.Add(50);
+    foreach (var num in numeriCompresiTra20E70)
+    {
+        Console.WriteLine(num);
+    }
+
+    // Tramite la funzione ToList() salvo il risultato di un IEnumerable in una lista in maniera "definitiva"
+    numeriCompresiTra20E70 = numeriCompresiTra20E70.ToList();
+    numeriRandom.Clear();
+    numeriRandom.Add(40);
+    foreach (var num in numeriCompresiTra20E70)
+    {
+        Console.WriteLine(num);
+    }
+    // FINE PARENTESI!!!!11!1oneone
+
+    // SNACK 5
+    // ===========
+    // 'adesso' è una COPIA di DateTime.Now, quindi non cambia se accedo a essa in futuro
+    // DateTime è uno struct, non una classe (e gli struct sono tipi valore)
+    DateTime adesso = DateTime.Now; 
+    <p>Sono le @adesso.ToString("yyyy/MM/dd HH:mm:ss") locali</p>
+    int a = 5;
+    int b = a;
+
+    // SNACK 6
+    // ===========
+    <p>7 giorni fa: @adesso.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss")</p>
+    // <p>Oggi è @adesso.DayOfWeek</p>
+    <p>Oggi è @adesso.ToString("dddd")</p>
+    <p>Fra un anno sarà @adesso.AddYears(1).ToString("dddd")</p>
+
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+@{
+    StampaNumeri(100);
+}

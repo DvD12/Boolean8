@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using Newtonsoft.Json
+@model HomeIndexViewModel // sto indicando alla view che l'oggetto passatogli come model dalla sua Action è di tipo HomeIndexViewModel
 @{
     List<Profile> profili = new List<Profile>();
     profili.Add(new Profile("Pinco", "Panco", 99));
@@ -34,3 +35,33 @@
         }
     </div>
 </div>
+
+@{
+    var obj = ViewData["Profilo1"];
+    var p = (Profile)obj; // Pericoloso!
+    <div class="row">
+        <div class="col"><h4>L'oggetto dalla ViewData 'Profilo1' è stato castato a Profile:</h4></div>
+    </div>
+    <div class="row">
+        <div class="col">@p.Name</div>
+        <div class="col">@p.Lastname</div>
+        <div class="col">@p.Age</div>
+    </div>
+
+    <br />
+
+    <div class="row">
+        <div class="col"><h4>L'oggetto Model è un HomeIndexViewModel:</h4></div>
+    </div>
+    <div class="row">
+        <div class="col"><h5>@Model.Messaggio</h5></div>
+    </div>
+    <div class="row">
+        <div class="col">@Model.Profilo.Name</div>
+        <div class="col">@Model.Profilo.Lastname</div>
+        <div class="col">@Model.Profilo.Age</div>
+    </div>
+}
+
+<a href="@Url.Action("ProvaParametri", "Home", new ProvaParametriViewModel() { Nome = "Ciao", Numero = 42 })">VAI A PROVA PARAMETRI</a>
+<a asp-route-nome="ciao" asp-route-numero="42" asp-controller="Home" asp-action="ProvaParametri">VAI A PROVA PARAMETRI CON ASP</a>
