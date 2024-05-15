@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
+<link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+
 @Body
 
 <div id="blazor-error-ui">
@@ -7,3 +9,5 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+<script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
