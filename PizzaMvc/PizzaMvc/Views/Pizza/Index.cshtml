@@ -1,0 +1,12 @@
+﻿@using PizzaMvc.Data
+@model List<Pizza>
+
+@foreach (var pizza in Model)
+{
+    <div class="row">
+        <div class="col">@pizza.Name</div>
+        <div class="col">@pizza.Description</div>
+        <div class="col">@pizza.Price.ToString("F2")</div>
+        <div class="col"><a href="@Url.Action("GetPizza", "Pizza", new { id = pizza.Id } )">GO TO</a></div>
+    </div>
+}
