@@ -1,0 +1,21 @@
+﻿@using BlogMvc.Data
+@model Post
+
+<div class="container">
+    <form asp-controller="Post" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <strong>Titolo:</strong>
+            <input asp-for="Title" class="d-block w-100" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Contenuto:</strong>
+            <input asp-for="Content" class="d-block w-100" />
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <div class="text-end">
+            <input type="submit" class="btn btn-small btn-info" value="Inserisci">
+        </div>
+    </form>
+</div>

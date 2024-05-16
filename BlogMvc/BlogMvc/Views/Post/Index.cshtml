@@ -1,0 +1,20 @@
+﻿@using BlogMvc.Code
+@using BlogMvc.Data
+@model List<Post>
+
+@foreach (var post in Model)
+{
+    <div class="row">
+        <div class="col"><h3>@post.Title</h3></div>
+        <div class="col">@post.Timestamp.ToString("yyyy/MM/dd HH:mm")</div>
+        <!-- <div class="col">@($"{Extensions.SafeSubstring(post.Content, 20)}...")</div> -->
+        <div class="col">@($"{post.Content.SafeSubstring(20)}")</div>
+        <div class="col"><a href="@Url.Action("GetPost", "Post", new { id = post.Id } )">MORE</a></div>
+    </div>
+}
+
+<div class="row">
+    <div class="col">
+        <a href="@Url.Action("Create", "Post")">CREA NUOVO POST</a>
+    </div>
+</div>
