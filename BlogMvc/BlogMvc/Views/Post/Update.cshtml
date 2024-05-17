@@ -1,0 +1,18 @@
+﻿@model Post
+
+<form asp-controller="Post" asp-action="Update" asp-route-id="@Model.Id" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <strong>Titolo:</strong>
+        <input asp-for="Title" class="d-block w-100" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <strong>Contenuto:</strong>
+        <input asp-for="Content" class="d-block w-100" />
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="text-end">
+        <input type="submit" class="btn btn-small btn-success" value="Salva">
+    </div>
+</form>

@@ -1,3 +1,4 @@
+using BlogMvc.Code;
 using BlogMvc.Data;
 
 namespace BlogMvc
@@ -12,6 +13,7 @@ namespace BlogMvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ICustomLogger, CustomLogger2>();
 
             var app = builder.Build();
 

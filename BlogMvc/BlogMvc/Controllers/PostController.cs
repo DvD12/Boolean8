@@ -1,4 +1,5 @@
-﻿using BlogMvc.Data;
+﻿using BlogMvc.Code;
+using BlogMvc.Data;
 using BlogMvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -8,14 +9,17 @@ namespace BlogMvc.Controllers
     public class PostController : Controller
     {
         private readonly ILogger<PostController> _logger;
+        private ICustomLogger customLogger;
 
-        public PostController(ILogger<PostController> logger)
+        public PostController(ILogger<PostController> logger, ICustomLogger customLogger)
         {
             _logger = logger;
+            this.customLogger = customLogger;
         }
 
         public IActionResult Index()
         {
+            customLogger.WriteLog("Sono entrato nell'index");
             return View(PostManager.GetAllPosts());
         }
 
@@ -50,13 +54,78 @@ namespace BlogMvc.Controllers
             }
 
             PostManager.InsertPost(data);
+            /*
             using (BlogContext db = new BlogContext())
             {
                 var postToCreate = new Post(data.Title, data.Content);
                 db.Posts.Add(postToCreate);
                 db.SaveChanges();
             }
+            */
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Update(int id)
+        {
+            // Prendo il post AGGIORNATO da database, non
+            // uno passato da utente alla action
+            var postToEdit = PostManager.GetPost(id);
+
+            if (postToEdit == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return View(postToEdit);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(int id, Post data)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Update", data);
+            }
+
+            // MODIFICA TRAMITE LAMBDA
+            bool result = PostManager.UpdatePost(id, postToEdit =>
+            {
+                postToEdit.Title = data.Title;
+                postToEdit.Content = data.Content;
+            });
+
+            if (result == true)
+                return RedirectToAction("Index");
+            else
+                return NotFound();
+
+            // MODIFICA "STANDARD"
+            if (PostManager.UpdatePost(id, data.Title, data.Content))
+                return RedirectToAction("Index");
+            else
+                return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            // Se voglio specificare l'url del chiamante come redirect
+            // posso indagare sulla richiesta:
+            //   var url = HttpContext.Request.Headers["Referer"];
+            // e poi fare Redirect()
+            //   return Redirect(url);
+            // Fonti:
+            // https://stackoverflow.com/questions/815229/how-do-i-redirect-to-the-previous-action-in-asp-net-mvc
+
+            if (PostManager.DeletePost(id))
+                return RedirectToAction("Index");
+            else
+                return NotFound();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

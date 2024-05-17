@@ -29,6 +29,51 @@ namespace BlogMvc.Data
             db.SaveChanges();
         }
 
+        public static bool UpdatePost(int id, Action<Post> edit)
+        {
+            using BlogContext db = new BlogContext();
+            var post = db.Posts.FirstOrDefault(p => p.Id == id);
+
+            if (post == null)
+                return false;
+
+            edit(post);
+
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public static bool UpdatePost(int id, string title, string content)
+        {
+            using BlogContext db = new BlogContext();
+            var post = db.Posts.FirstOrDefault(p => p.Id == id);
+
+            if (post == null)
+                return false;
+
+            post.Title = title;
+            post.Content = content;
+
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public static bool DeletePost(int id)
+        {
+            using BlogContext db = new BlogContext();
+            var post = db.Posts.FirstOrDefault(p => p.Id == id);
+
+            if (post == null)
+                return false;
+
+            db.Posts.Remove(post);
+            db.SaveChanges();
+
+            return true;
+        }
+
         public static void Seed()
         {
             if (PostManager.CountAllPosts() == 0)

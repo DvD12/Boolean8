@@ -9,7 +9,16 @@
         <div class="col">@post.Timestamp.ToString("yyyy/MM/dd HH:mm")</div>
         <!-- <div class="col">@($"{Extensions.SafeSubstring(post.Content, 20)}...")</div> -->
         <div class="col">@($"{post.Content.SafeSubstring(20)}")</div>
-        <div class="col"><a href="@Url.Action("GetPost", "Post", new { id = post.Id } )">MORE</a></div>
+        <div class="col-auto"><a href="@Url.Action("GetPost", "Post", new { id = post.Id } )">MORE</a></div>
+        <div class="col-auto"><a href="@Url.Action("Update", "Post", new { id = post.Id } )">EDIT</a></div>
+        <div class="col-auto">
+            <form asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger btn-sm">
+                    CANCELLA
+                </button>
+            </form>
+        </div>
     </div>
 }
 

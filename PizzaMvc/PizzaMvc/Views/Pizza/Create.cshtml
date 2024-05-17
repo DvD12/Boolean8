@@ -1,0 +1,27 @@
+﻿@using PizzaMvc.Data
+
+@model Pizza
+<div class="container">
+    <form asp-controller="Pizza" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <strong>Nome:</strong>
+            <input asp-for="Name" class="d-block w-100" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Descrizione:</strong>
+            <input asp-for="Description" class="d-block w-100" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Prezzo:</strong>
+            <input type="number" asp-for="Price" class="d-block w-100" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="text-end">
+            <!-- La form MANDA il suo modello "compilato" alla action POST come parametro -->
+            <input type="submit" class="btn btn-small btn-info" value="Inserisci">
+        </div>
+    </form>
+</div>
