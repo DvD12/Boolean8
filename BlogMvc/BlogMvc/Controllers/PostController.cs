@@ -133,17 +133,6 @@ namespace BlogMvc.Controllers
                 return NotFound();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteCategory()
-        {
-            using var db = new BlogContext();
-            var php = db.Categories.FirstOrDefault(x => x.Title == "PHP");
-            db.Remove(php);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

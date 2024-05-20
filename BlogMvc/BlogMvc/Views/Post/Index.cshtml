@@ -22,15 +22,6 @@
     </div>
 }
 
-<div class="col-auto">
-    <form asp-controller="Post" asp-action="DeleteCategory" method="post">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger btn-sm">
-            CANCELLA categoria PHP
-        </button>
-    </form>
-</div>
-
 <div class="row">
     <div class="col">
         <a href="@Url.Action("Create", "Post")">CREA NUOVO POST</a>
