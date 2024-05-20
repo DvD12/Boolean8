@@ -23,15 +23,24 @@ namespace PizzaMvc.Controllers
         [HttpGet]
         public IActionResult GetPizza(int id)
         {
-            var pizza = PizzaManager.GetPizza(id);
-            if (pizza != null)
-                return View(pizza);
-            else
-                return View("errore");
+            try
+            {
+                var pizza = PizzaManager.GetPizza(id);
+                if (pizza != null)
+                    return View(pizza);
+                else
+                    //return NotFound();
+                    return View("Errore", new ErroreViewModel($"La pizza {id} non è stata trovata!"));
+            }
+            catch (Exception e)
+            {
+                return View("Errore", new ErroreViewModel(e.Message));
+                //return BadRequest(e.Message);
+            }
         }
 
         [HttpGet]
-        public IActionResult Create() // Restituisce la form per la creazione di pizze
+        public IActionResult CreatePizza() // Restituisce la form per la creazione di pizze
         {
             Pizza p = new Pizza("Nome di default", "Descrizione base", 66.6M);
             return View(p);
@@ -39,23 +48,82 @@ namespace PizzaMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Pizza pizzaDaInserire) // Restituisce la form per la creazione di pizze
+        public IActionResult CreatePizza(Pizza pizzaDaInserire)
         {
             if (ModelState.IsValid == false)
             {
                 // Ritorno la form di prima con i dati della pizza
                 // precompilati dall'utente
-                return View("Create", pizzaDaInserire);
+                return View("CreatePizza", pizzaDaInserire);
             }
-            using (var db = new PizzaContext())
-            {
-                db.Add(pizzaDaInserire);
-                db.SaveChanges();
 
+            PizzaManager.InsertPizza(pizzaDaInserire);
+            // Richiamiamo la action Index affinché vengano mostrate tutte le pizze
+            // inclusa quella nuova
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        // Mi serve l'ID della pizza per:
+        // 1) Indicare alla view QUALE pizza devo modificare
+        // 2) Popolare la form della view coi dati della pizza che sto per modificare
+        public IActionResult UpdatePizza(int id) // Restituisce la form per l'update di una pizza
+        {
+            var pizza = PizzaManager.GetPizza(id);
+            if (pizza == null)
+                return NotFound();
+            return View(pizza);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdatePizza(int id, Pizza pizzaDaModificare) // Restituisce la form per la creazione di pizze
+        {
+            if (ModelState.IsValid == false)
+            {
+                // Ritorno la form di prima con i dati della pizza
+                // precompilati dall'utente
+                return View("UpdatePizza", pizzaDaModificare);
+            }
+
+            var modified = PizzaManager.UpdatePizza(id, pizzaDaModificare);
+            if (modified)
+            {
                 // Richiamiamo la action Index affinché vengano mostrate tutte le pizze
-                // inclusa quella nuova
                 return RedirectToAction("Index");
             }
+            else
+                return NotFound();
+
+            /*
+            var state = PizzaManager.UpdatePizzaWithEnum(id, pizzaDaModificare);
+            switch (state)
+            {
+                case ResultType.OK:
+                    return RedirectToAction("Index");
+                    break;
+                case ResultType.NotFound:
+                    return NotFound();
+                    break;
+                case ResultType.Exception:
+                    return NotFound();
+                    break;
+            }
+            */
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePizza(int id)
+        {
+            var deleted = PizzaManager.DeletePizza(id);
+            if (deleted)
+            {
+                // Richiamiamo la action Index affinché vengano mostrate tutte le pizze
+                return RedirectToAction("Index");
+            }
+            else
+                return NotFound();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

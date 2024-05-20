@@ -1,5 +1,12 @@
 ﻿namespace PizzaMvc.Data
 {
+    public enum ResultType
+    {
+        OK,
+        Exception,
+        NotFound
+    }
+
     public static class PizzaManager
     {
         public static int CountAllPizzas()
@@ -25,6 +32,71 @@
             using PizzaContext db = new PizzaContext();
             db.Pizzas.Add(pizza);
             db.SaveChanges();
+        }
+
+        public static bool UpdatePizza(int id, Pizza pizza)
+        {
+            try
+            {
+                // Non posso riusare GetPizza()
+                // perché il DbContext deve continuare a vivere
+                // affinché possa accorgersi di quali modifiche deve salvare
+                using PizzaContext db = new PizzaContext();
+                var pizzaDaModificare = db.Pizzas.FirstOrDefault(p => p.Id == id);
+                if (pizzaDaModificare == null)
+                    return false;
+                pizzaDaModificare.Name = pizza.Name;
+                pizzaDaModificare.Description = pizza.Description;
+                pizzaDaModificare.Price = pizza.Price;
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static ResultType UpdatePizzaWithEnum(int id, Pizza pizza) // solo a scopo didattico
+        {
+            try
+            {
+                using PizzaContext db = new PizzaContext();
+                var pizzaDaModificare = db.Pizzas.FirstOrDefault(p => p.Id == id);
+                if (pizzaDaModificare == null)
+                    return ResultType.NotFound;
+                pizzaDaModificare.Name = pizza.Name;
+                pizzaDaModificare.Description = pizza.Description;
+                pizzaDaModificare.Price = pizza.Price;
+
+                db.SaveChanges();
+                return ResultType.OK;
+            }
+            catch (Exception ex)
+            {
+                return ResultType.Exception;
+            }
+        }
+
+        public static bool DeletePizza(int id)
+        {
+            try
+            {
+                //using PizzaContext db = new PizzaContext();
+                var pizzaDaCancellare = GetPizza(id); // db.Pizzas.FirstOrDefault(p => p.Id == id);
+                if (pizzaDaCancellare == null)
+                    return false;
+
+                using PizzaContext db = new PizzaContext();
+                db.Remove(pizzaDaCancellare);
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public static void Seed()

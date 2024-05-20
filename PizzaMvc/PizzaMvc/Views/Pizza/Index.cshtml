@@ -8,7 +8,74 @@
         <div class="col">@pizza.Description</div>
         <div class="col">@pizza.Price.ToString("F2")</div>
         <div class="col"><a href="@Url.Action("GetPizza", "Pizza", new { id = pizza.Id } )">GO TO</a></div>
+        <div class="col"><a href="@Url.Action("UpdatePizza", "Pizza", new { id = pizza.Id } )">EDIT</a></div>
+        <div class="col">
+            <form asp-controller="Pizza" asp-action="DeletePizza" asp-route-id="@pizza.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger btn-sm">
+                    DELETE
+                </button>
+            </form>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#itemModal"
+                    data-id="@pizza.Id"
+                    data-name="@pizza.Name"
+                    data-action-url="@Url.Action("DeletePizza", "Pizza", new { id = pizza.Id })">
+                Delete test
+            </button>
+        </div>
     </div>
 }
 
-<a href="@Url.Action("Create", "Pizza")">CREA PIZZA</a>
+<a href="@Url.Action("CreatePizza", "Pizza")">CREA PIZZA</a>
+
+<div id="itemModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Item Form</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm" action="" method="post">
+                    <input type="hidden" id="itemId" name="id" value="" />
+                    <!-- Add other form fields here -->
+                    <div class="form-group">
+                        <label for="itemName">Name</label>
+                        <input type="text" class="form-control" id="itemName" name="name" />
+                    </div>
+                    <!-- Other fields as necessary -->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var itemModal = document.getElementById('itemModal');
+        var itemForm = document.getElementById('itemForm');
+        var modalTitle = itemModal.querySelector('.modal-title');
+        var itemIdInput = document.getElementById('itemId');
+        var itemNameInput = document.getElementById('itemName');
+
+        itemModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var id = button.getAttribute('data-id'); // Extract info from data-* attributes
+            var name = button.getAttribute('data-name');
+            var actionUrl = button.getAttribute('data-action-url');
+
+            // Update the modal's content
+            modalTitle.textContent = 'Delete Item ' + name;
+            itemIdInput.value = id;
+            itemNameInput.value = name;
+            itemForm.action = actionUrl;
+        });
+    });
+</script>
