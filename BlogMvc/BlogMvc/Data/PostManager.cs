@@ -1,4 +1,5 @@
 ﻿using BlogMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogMvc.Data
 {
@@ -16,9 +17,17 @@ namespace BlogMvc.Data
             return db.Posts.ToList();
         }
 
-        public static Post GetPost(int id)
+        public static List<Category> GetAllCategories()
         {
             using BlogContext db = new BlogContext();
+            return db.Categories.ToList();
+        }
+
+        public static Post GetPost(int id, bool includeReferences = true)
+        {
+            using BlogContext db = new BlogContext();
+            if (includeReferences)
+                return db.Posts.Where(p => p.Id == id).Include(p => p.Category).FirstOrDefault();
             return db.Posts.FirstOrDefault(p => p.Id == id);
         }
 
@@ -44,7 +53,7 @@ namespace BlogMvc.Data
             return true;
         }
 
-        public static bool UpdatePost(int id, string title, string content)
+        public static bool UpdatePost(int id, string title, string content, int? categoryId)
         {
             using BlogContext db = new BlogContext();
             var post = db.Posts.FirstOrDefault(p => p.Id == id);
@@ -54,6 +63,7 @@ namespace BlogMvc.Data
 
             post.Title = title;
             post.Content = content;
+            post.CategoryId = categoryId;
 
             db.SaveChanges();
 

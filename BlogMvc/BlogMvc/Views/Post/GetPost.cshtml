@@ -5,6 +5,13 @@
 <div class="row">
     <div class="col"><h3>@Model.Title</h3></div>
     <div class="col">@Model.Timestamp.ToString("yyyy/MM/dd HH:mm")</div>
+</div>
+<div class="row">
     <div class="col">@($"{Model.Content}")</div>
+</div>
+<div class="row">
+    <div class="col">Categoria: @($"{Model.GetDisplayedCategory()}")</div>
+</div>
+<div class="row">
     <div class="col"><a href="@Url.Action("Index", "Post")">BACK</a></div>
 </div>

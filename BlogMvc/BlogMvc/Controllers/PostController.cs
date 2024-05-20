@@ -25,7 +25,7 @@ namespace BlogMvc.Controllers
 
         public IActionResult GetPost(int id)
         {
-            var Post = PostManager.GetPost(id);
+            var Post = PostManager.GetPost(id, true);
             if (Post != null)
                 return View(Post);
             else
@@ -37,14 +37,17 @@ namespace BlogMvc.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            PostFormModel model = new PostFormModel();
+            model.Post = new Post();
+            model.Categories = PostManager.GetAllCategories(); 
+            return View(model);
         }
 
         // Action richiamata dalla view tramite la form
         // (view che le passa il Post "data", fornito dalla form)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Post data)
+        public IActionResult Create(PostFormModel data)
         {
             if (!ModelState.IsValid)
             {
@@ -53,7 +56,7 @@ namespace BlogMvc.Controllers
                 return View("Create", data);
             }
 
-            PostManager.InsertPost(data);
+            PostManager.InsertPost(data.Post);
             /*
             using (BlogContext db = new BlogContext())
             {
@@ -78,13 +81,14 @@ namespace BlogMvc.Controllers
             }
             else
             {
-                return View(postToEdit);
+                PostFormModel model = new PostFormModel(postToEdit, PostManager.GetAllCategories());
+                return View(model);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id, Post data)
+        public IActionResult Update(int id, PostFormModel data)
         {
             if (!ModelState.IsValid)
             {
@@ -94,8 +98,9 @@ namespace BlogMvc.Controllers
             // MODIFICA TRAMITE LAMBDA
             bool result = PostManager.UpdatePost(id, postToEdit =>
             {
-                postToEdit.Title = data.Title;
-                postToEdit.Content = data.Content;
+                postToEdit.Title = data.Post.Title;
+                postToEdit.Content = data.Post.Content;
+                postToEdit.CategoryId = data.Post.CategoryId;
             });
 
             if (result == true)
@@ -104,7 +109,7 @@ namespace BlogMvc.Controllers
                 return NotFound();
 
             // MODIFICA "STANDARD"
-            if (PostManager.UpdatePost(id, data.Title, data.Content))
+            if (PostManager.UpdatePost(id, data.Post.Title, data.Post.Content, data.Post.CategoryId))
                 return RedirectToAction("Index");
             else
                 return NotFound();
@@ -126,6 +131,17 @@ namespace BlogMvc.Controllers
                 return RedirectToAction("Index");
             else
                 return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteCategory()
+        {
+            using var db = new BlogContext();
+            var php = db.Categories.FirstOrDefault(x => x.Title == "PHP");
+            db.Remove(php);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

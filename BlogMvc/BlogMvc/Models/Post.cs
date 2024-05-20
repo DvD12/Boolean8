@@ -12,6 +12,9 @@ namespace BlogMvc.Models
         public string Content { get; set; }
         public DateTime Timestamp { get; set; }
 
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+
         public Post()
         {
             Timestamp = DateTime.Now;
@@ -21,6 +24,16 @@ namespace BlogMvc.Models
         {
             Title = title;
             Content = content;
+        }
+
+        public string GetDisplayedCategory()
+        {
+            if (Category == null)
+                return "Nessuna categoria";
+            return Category.Title;
+
+            // Versione più sintetica:
+            //return Category?.Title ?? "Nessuna categoria";
         }
     }
 }
