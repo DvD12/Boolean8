@@ -1,4 +1,7 @@
-﻿namespace PizzaMvc.Data
+﻿using Microsoft.EntityFrameworkCore;
+using PizzaMvc.Models;
+
+namespace PizzaMvc.Data
 {
     public enum ResultType
     {
@@ -21,10 +24,18 @@
             return db.Pizzas.ToList();
         }
 
-        public static Pizza GetPizza(int id)
+        public static Pizza GetPizza(int id, bool includeReferences = true)
         {
             using PizzaContext db = new PizzaContext();
+            if (includeReferences)
+                return db.Pizzas.Where(x => x.Id == id).Include(p => p.Category).FirstOrDefault();
             return db.Pizzas.FirstOrDefault(p => p.Id == id);
+        }
+
+        public static List<Category> GetAllCategories()
+        {
+            using PizzaContext db = new PizzaContext();
+            return db.Categories.ToList();
         }
 
         public static void InsertPizza(Pizza pizza)
@@ -48,6 +59,7 @@
                 pizzaDaModificare.Name = pizza.Name;
                 pizzaDaModificare.Description = pizza.Description;
                 pizzaDaModificare.Price = pizza.Price;
+                pizzaDaModificare.CategoryId = pizza.CategoryId;
 
                 db.SaveChanges();
                 return true;
@@ -84,7 +96,7 @@
             try
             {
                 //using PizzaContext db = new PizzaContext();
-                var pizzaDaCancellare = GetPizza(id); // db.Pizzas.FirstOrDefault(p => p.Id == id);
+                var pizzaDaCancellare = GetPizza(id, false); // db.Pizzas.FirstOrDefault(p => p.Id == id);
                 if (pizzaDaCancellare == null)
                     return false;
 

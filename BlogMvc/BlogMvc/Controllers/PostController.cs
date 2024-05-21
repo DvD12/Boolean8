@@ -2,6 +2,7 @@
 using BlogMvc.Data;
 using BlogMvc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace BlogMvc.Controllers
@@ -39,7 +40,8 @@ namespace BlogMvc.Controllers
         {
             PostFormModel model = new PostFormModel();
             model.Post = new Post();
-            model.Categories = PostManager.GetAllCategories(); 
+            model.Categories = PostManager.GetAllCategories();
+            model.CreateTags();
             return View(model);
         }
 
@@ -53,10 +55,12 @@ namespace BlogMvc.Controllers
             {
                 // Ritorniamo "data" alla view così che la form abbia di nuovo i dati inseriti
                 // (anche se erronei)
+                data.Categories = PostManager.GetAllCategories();
+                data.CreateTags();
                 return View("Create", data);
             }
 
-            PostManager.InsertPost(data.Post);
+            PostManager.InsertPost(data.Post, data.SelectedTags);
             /*
             using (BlogContext db = new BlogContext())
             {
@@ -82,6 +86,7 @@ namespace BlogMvc.Controllers
             else
             {
                 PostFormModel model = new PostFormModel(postToEdit, PostManager.GetAllCategories());
+                model.CreateTags();
                 return View(model);
             }
         }
@@ -92,8 +97,16 @@ namespace BlogMvc.Controllers
         {
             if (!ModelState.IsValid)
             {
+                data.Categories = PostManager.GetAllCategories();
+                data.CreateTags();
                 return View("Update", data);
             }
+
+            // MODIFICA "STANDARD"
+            if (PostManager.UpdatePost(id, data.Post.Title, data.Post.Content, data.Post.CategoryId, data.SelectedTags))
+                return RedirectToAction("Index");
+            else
+                return NotFound();
 
             // MODIFICA TRAMITE LAMBDA
             bool result = PostManager.UpdatePost(id, postToEdit =>
@@ -101,18 +114,9 @@ namespace BlogMvc.Controllers
                 postToEdit.Title = data.Post.Title;
                 postToEdit.Content = data.Post.Content;
                 postToEdit.CategoryId = data.Post.CategoryId;
+                postToEdit.Tags.Clear();
+
             });
-
-            if (result == true)
-                return RedirectToAction("Index");
-            else
-                return NotFound();
-
-            // MODIFICA "STANDARD"
-            if (PostManager.UpdatePost(id, data.Post.Title, data.Post.Content, data.Post.CategoryId))
-                return RedirectToAction("Index");
-            else
-                return NotFound();
         }
 
         [HttpPost]

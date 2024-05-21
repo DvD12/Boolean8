@@ -8,3 +8,6 @@
     <div class="col">@Model.Price.ToString("F2")</div>
     <div class="col"><a href="@Url.Action("Index", "Pizza")">BACK</a></div>
 </div>
+<div class="row">
+    <div class="col">Categoria: @Model.GetDisplayedCategory()</div>
+</div>

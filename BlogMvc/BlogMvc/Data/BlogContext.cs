@@ -9,6 +9,7 @@ namespace BlogMvc.Data
     {
         public DbSet<Post> Posts { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public const string CONNECTION_STRING = "Data Source=localhost;Initial Catalog=Blog8;Integrated Security=True;TrustServerCertificate=True";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -16,6 +17,7 @@ namespace BlogMvc.Data
             optionsBuilder.UseSqlServer(CONNECTION_STRING);
         }
 
+        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Post>()
@@ -26,5 +28,6 @@ namespace BlogMvc.Data
 
             base.OnModelCreating(modelBuilder);
         }
+        */
     }
 }

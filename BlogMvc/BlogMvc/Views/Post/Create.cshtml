@@ -31,6 +31,25 @@
                 }
             </select>
         </div>
+        <div class="mb-3">
+            <strong>Tags:</strong>
+            <!--
+            <select asp-for="SelectedTags"
+                    multiple="multiple"
+                    size="10"
+                    class="form-control mb-2 mr-sm-2 ml-sm-3 leftList"
+                    asp-items="@Model.Tags">
+            </select>-->
+
+            @for (int i = 0; i < Model.Tags.Count; i++)
+            {
+                <div>
+                    <input type="checkbox" name="SelectedTags" value="@Model.Tags[i].Value"
+                    @(Model.SelectedTags.Contains(Model.Tags[i].Value) ? "checked" : "") />
+                    @Model.Tags[i].Text
+                </div>
+            }
+        </div>
         <div class="text-end">
             <input type="submit" class="btn btn-small btn-info" value="Inserisci">
         </div>

@@ -1,23 +1,41 @@
 ﻿@using PizzaMvc.Data
 
-@model Pizza
+@model PizzaFormModel
+
 <div class="container">
     <form asp-controller="Pizza" asp-action="CreatePizza" method="post">
         @Html.AntiForgeryToken()
         <div class="mb-3">
             <strong>Nome:</strong>
-            <input asp-for="Name" class="d-block w-100" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <input asp-for="Pizza.Name" class="d-block w-100" />
+            <span asp-validation-for="Pizza.Name" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <strong>Descrizione:</strong>
-            <input asp-for="Description" class="d-block w-100" />
-            <span asp-validation-for="Description" class="text-danger"></span>
+            <input asp-for="Pizza.Description" class="d-block w-100" />
+            <span asp-validation-for="Pizza.Description" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <strong>Prezzo:</strong>
-            <input asp-for="Price" class="d-block w-100" />
-            <span asp-validation-for="Price" class="text-danger"></span>
+            <input asp-for="Pizza.Price" class="d-block w-100" />
+            <span asp-validation-for="Pizza.Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Categoria:</strong>
+            <select asp-for="Pizza.CategoryId" rows="10" class="d-block w-100">
+                <option value=""></option>
+                @foreach (Category category in Model.Categories)
+                {
+                    @if (Model.Pizza.CategoryId == category.Id)
+                    {
+                        <option value="@category.Id" selected>@category.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
         </div>
         <div class="text-end">
             <!-- La form MANDA il suo modello "compilato" alla action POST come parametro -->

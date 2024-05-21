@@ -2,24 +2,33 @@
 
 #nullable disable
 
-namespace BlogMvc.Migrations
+namespace PizzaMvc.Migrations
 {
     public partial class AddCategories : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Title",
-                table: "Posts",
-                type: "nvarchar(50)",
-                maxLength: 50,
+                name: "Name",
+                table: "Pizzas",
+                type: "nvarchar(40)",
+                maxLength: 40,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Pizzas",
+                type: "nvarchar(200)",
+                maxLength: 200,
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AddColumn<int>(
                 name: "CategoryId",
-                table: "Posts",
+                table: "Pizzas",
                 type: "int",
                 nullable: true);
 
@@ -29,7 +38,7 @@ namespace BlogMvc.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,13 +46,13 @@ namespace BlogMvc.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_CategoryId",
-                table: "Posts",
+                name: "IX_Pizzas_CategoryId",
+                table: "Pizzas",
                 column: "CategoryId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Posts_Categories_CategoryId",
-                table: "Posts",
+                name: "FK_Pizzas_Categories_CategoryId",
+                table: "Pizzas",
                 column: "CategoryId",
                 principalTable: "Categories",
                 principalColumn: "Id");
@@ -52,28 +61,37 @@ namespace BlogMvc.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Posts_Categories_CategoryId",
-                table: "Posts");
+                name: "FK_Pizzas_Categories_CategoryId",
+                table: "Pizzas");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropIndex(
-                name: "IX_Posts_CategoryId",
-                table: "Posts");
+                name: "IX_Pizzas_CategoryId",
+                table: "Pizzas");
 
             migrationBuilder.DropColumn(
                 name: "CategoryId",
-                table: "Posts");
+                table: "Pizzas");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Title",
-                table: "Posts",
+                name: "Name",
+                table: "Pizzas",
                 type: "nvarchar(max)",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(50)",
-                oldMaxLength: 50);
+                oldType: "nvarchar(40)",
+                oldMaxLength: 40);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Pizzas",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200);
         }
     }
 }

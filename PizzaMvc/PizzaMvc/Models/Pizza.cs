@@ -1,7 +1,6 @@
-﻿using PizzaMvc.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace PizzaMvc.Data
+namespace PizzaMvc.Models
 {
     public class Pizza
     {
@@ -17,13 +16,23 @@ namespace PizzaMvc.Data
         public decimal Price { get; set; }
         public string? Image { get; set; }
 
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+
         public Pizza() { }
 
         public Pizza(string name, string description, decimal price)
         {
-            this.Name = name;
-            this.Description = description;
-            this.Price = price;
+            Name = name;
+            Description = description;
+            Price = price;
+        }
+
+        public string GetDisplayedCategory()
+        {
+            if (Category == null)
+                return "Nessuna categoria";
+            return Category.Name;
         }
     }
 }

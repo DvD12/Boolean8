@@ -1,7 +1,7 @@
 ﻿@using BlogMvc.Data
 @model Post
 
-<h1>LA PIZZA SELEZIONATA</h1>
+<h1>IL POST SELEZIONATO</h1>
 <div class="row">
     <div class="col"><h3>@Model.Title</h3></div>
     <div class="col">@Model.Timestamp.ToString("yyyy/MM/dd HH:mm")</div>
@@ -11,6 +11,19 @@
 </div>
 <div class="row">
     <div class="col">Categoria: @($"{Model.GetDisplayedCategory()}")</div>
+</div>
+<div class="row">
+    <div class="col">Tags:
+        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+            @foreach (var tag in Model.Tags)
+            {
+                <div style="background-color: #AAAAAA; display: flex; justify-content: center; align-items: center;
+                            border-radius: 3px; border-style: solid; border-color: #AAAAAA; padding: 2px;">
+                    @tag.Title
+                </div>
+            }
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col"><a href="@Url.Action("Index", "Post")">BACK</a></div>
