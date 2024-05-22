@@ -1,57 +1,63 @@
 ﻿@using BlogMvc.Data
 @model PostFormModel
 
-<div class="container">
-    <form asp-controller="Post" asp-action="Create" method="post">
-        @Html.AntiForgeryToken()
-        <div class="mb-3">
-            <strong>Titolo:</strong>
-            <input asp-for="Post.Title" class="d-block w-100" />
-            <span asp-validation-for="Post.Title" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <strong>Contenuto:</strong>
-            <input asp-for="Post.Content" class="d-block w-100 is-invalid" />
-            <span asp-validation-for="Post.Content" class="text-danger is-invalid"></span>
-        </div>
-        <div class="mb-3">
-            <strong>Categoria:</strong>
-            <select asp-for="Post.CategoryId" rows="10" class="d-block w-100">
-                <option value=""></option>
-                @foreach (Category category in Model.Categories)
+@if (User.IsInRole("Admin"))
+{
+    <div class="container">
+        <form asp-controller="Post" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <strong>Titolo:</strong>
+                <input asp-for="Post.Title" class="d-block w-100" />
+                <span asp-validation-for="Post.Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Contenuto:</strong>
+                <input asp-for="Post.Content" class="d-block w-100 is-invalid" />
+                <span asp-validation-for="Post.Content" class="text-danger is-invalid"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Categoria:</strong>
+                <select asp-for="Post.CategoryId" rows="10" class="d-block w-100">
+                    <option value=""></option>
+                    @foreach (Category category in Model.Categories)
+                    {
+                        @if (Model.Post.CategoryId == category.Id)
+                        {
+                            <option value="@category.Id" selected>@category.Title</option>
+                        }
+                        else
+                        {
+                            <option value="@category.Id">@category.Title</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <strong>Tags:</strong>
+                <!--
+                <select asp-for="SelectedTags"
+                        multiple="multiple"
+                        size="10"
+                        class="form-control mb-2 mr-sm-2 ml-sm-3 leftList"
+                        asp-items="@Model.Tags">
+                </select>-->
+                @for (int i = 0; i < Model.Tags.Count; i++)
                 {
-                    @if (Model.Post.CategoryId == category.Id)
-                    {
-                        <option value="@category.Id" selected>@category.Title</option>
-                    }
-                    else
-                    {
-                        <option value="@category.Id">@category.Title</option>
-                    }
+                    <div>
+                        <input type="checkbox" name="SelectedTags" value="@Model.Tags[i].Value"
+                        @(Model.SelectedTags.Contains(Model.Tags[i].Value) ? "checked" : "") />
+                        @Model.Tags[i].Text
+                    </div>
                 }
-            </select>
-        </div>
-        <div class="mb-3">
-            <strong>Tags:</strong>
-            <!--
-            <select asp-for="SelectedTags"
-                    multiple="multiple"
-                    size="10"
-                    class="form-control mb-2 mr-sm-2 ml-sm-3 leftList"
-                    asp-items="@Model.Tags">
-            </select>-->
-
-            @for (int i = 0; i < Model.Tags.Count; i++)
-            {
-                <div>
-                    <input type="checkbox" name="SelectedTags" value="@Model.Tags[i].Value"
-                    @(Model.SelectedTags.Contains(Model.Tags[i].Value) ? "checked" : "") />
-                    @Model.Tags[i].Text
-                </div>
-            }
-        </div>
-        <div class="text-end">
-            <input type="submit" class="btn btn-small btn-info" value="Inserisci">
-        </div>
-    </form>
-</div>
+            </div>
+            <div class="text-end">
+                <input type="submit" class="btn btn-small btn-info" value="Inserisci">
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <h1>Non sei autorizzato!1!11!!!!1!!oneoenoneoneoenonw</h1>
+}

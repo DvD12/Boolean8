@@ -1,8 +1,10 @@
 ﻿using BlogMvc.Code;
 using BlogMvc.Data;
 using BlogMvc.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
 
 namespace BlogMvc.Controllers
@@ -49,6 +51,7 @@ namespace BlogMvc.Controllers
         // (view che le passa il Post "data", fornito dalla form)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,User")]
         public IActionResult Create(PostFormModel data)
         {
             if (!ModelState.IsValid)
@@ -109,13 +112,15 @@ namespace BlogMvc.Controllers
                 return NotFound();
 
             // MODIFICA TRAMITE LAMBDA
-            bool result = PostManager.UpdatePost(id, postToEdit =>
+            bool result = PostManager.UpdatePost(id, (postToEdit, selectedTags) =>
             {
                 postToEdit.Title = data.Post.Title;
                 postToEdit.Content = data.Post.Content;
                 postToEdit.CategoryId = data.Post.CategoryId;
                 postToEdit.Tags.Clear();
-            });
+                foreach (var tag in selectedTags)
+                    postToEdit.Tags.Add(tag);
+            }, data.SelectedTags);
         }
 
         [HttpPost]

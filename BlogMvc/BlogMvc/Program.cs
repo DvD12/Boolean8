@@ -1,5 +1,7 @@
 using BlogMvc.Code;
 using BlogMvc.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogMvc
 {
@@ -10,6 +12,13 @@ namespace BlogMvc
             PostManager.Seed();
 
             var builder = WebApplication.CreateBuilder(args);
+            
+            builder.Services.AddDbContext<BlogContext>();
+
+            builder.Services
+                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<BlogContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -29,12 +38,13 @@ namespace BlogMvc
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Post}/{action=Index}/{id?}");
+            app.MapRazorPages();
 
             app.Run();
         }

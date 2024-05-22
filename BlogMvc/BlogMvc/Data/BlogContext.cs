@@ -1,11 +1,13 @@
 ﻿using BlogMvc.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Hosting;
 
 namespace BlogMvc.Data
 {
-    public class BlogContext : DbContext
+    public class BlogContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Post> Posts { get; set; }
         public DbSet<Category> Categories { get; set; }

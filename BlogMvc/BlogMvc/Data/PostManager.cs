@@ -62,15 +62,26 @@ namespace BlogMvc.Data
             db.SaveChanges();
         }
 
-        public static bool UpdatePost(int id, Action<Post> edit)
+        public static bool UpdatePost(int id, Action<Post, List<Tag>> edit, List<string> tags)
         {
             using BlogContext db = new BlogContext();
-            var post = db.Posts.FirstOrDefault(p => p.Id == id);
+            var post = db.Posts.Where(x => x.Id == id).Include(x => x.Tags).FirstOrDefault();
 
             if (post == null)
                 return false;
 
-            edit(post);
+            List<Tag> tagsFromDb = new List<Tag>();
+            if (tags != null)
+            {
+                foreach (var tag in tags)
+                {
+                    int tagId = int.Parse(tag);
+                    var tagFromDb = db.Tags.FirstOrDefault(x => x.Id == tagId);
+                    tagsFromDb.Add(tagFromDb);
+                }
+            }
+
+            edit(post, tagsFromDb);
 
             db.SaveChanges();
 
