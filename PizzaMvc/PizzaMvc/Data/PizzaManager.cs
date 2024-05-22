@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using PizzaMvc.Models;
 
 namespace PizzaMvc.Data
@@ -28,7 +29,7 @@ namespace PizzaMvc.Data
         {
             using PizzaContext db = new PizzaContext();
             if (includeReferences)
-                return db.Pizzas.Where(x => x.Id == id).Include(p => p.Category).FirstOrDefault();
+                return db.Pizzas.Where(x => x.Id == id).Include(p => p.Category).Include(p => p.Ingredients).FirstOrDefault();
             return db.Pizzas.FirstOrDefault(p => p.Id == id);
         }
 
@@ -37,15 +38,36 @@ namespace PizzaMvc.Data
             using PizzaContext db = new PizzaContext();
             return db.Categories.ToList();
         }
-
-        public static void InsertPizza(Pizza pizza)
+        public static List<Ingredient> GetAllIngredients()
         {
             using PizzaContext db = new PizzaContext();
+            return db.Ingredients.ToList();
+        }
+
+        public static void InsertPizza(Pizza pizza, List<string> selectedIngredients)
+        {
+            using PizzaContext db = new PizzaContext();
+            pizza.Ingredients = new List<Ingredient>();
+            if (selectedIngredients != null)
+            {
+                // Trasformiamo gli ID scelti in ingredienti da aggiungere tra i riferimenti in Pizza
+                foreach (var ingredient in selectedIngredients)
+                {
+                    int id = int.Parse(ingredient);
+                    // NON usiamo un GetIngredientById() perché userebbe un db context diverso
+                    // e ciò causerebbe errore in fase di salvataggio - usiamo lo stesso context all'interno della stessa operazione
+                    var ingredientFromDb = db.Ingredients.FirstOrDefault(x => x.Id == id);
+                    if (ingredientFromDb != null)
+                    {
+                        pizza.Ingredients.Add(ingredientFromDb);
+                    }
+                }
+            }
             db.Pizzas.Add(pizza);
             db.SaveChanges();
         }
 
-        public static bool UpdatePizza(int id, Pizza pizza)
+        public static bool UpdatePizza(int id, Pizza pizza, List<string> selectedIngredients)
         {
             try
             {
@@ -53,13 +75,26 @@ namespace PizzaMvc.Data
                 // perché il DbContext deve continuare a vivere
                 // affinché possa accorgersi di quali modifiche deve salvare
                 using PizzaContext db = new PizzaContext();
-                var pizzaDaModificare = db.Pizzas.FirstOrDefault(p => p.Id == id);
+                var pizzaDaModificare = db.Pizzas.Where(p => p.Id == id).Include(p => p.Ingredients).FirstOrDefault();
                 if (pizzaDaModificare == null)
                     return false;
                 pizzaDaModificare.Name = pizza.Name;
                 pizzaDaModificare.Description = pizza.Description;
                 pizzaDaModificare.Price = pizza.Price;
                 pizzaDaModificare.CategoryId = pizza.CategoryId;
+
+                // Prima svuoto così da salvare solo le informazioni che l'utente ha scelto, NON le aggiungiamo ai vecchi dati
+                pizzaDaModificare.Ingredients.Clear();
+                if (selectedIngredients != null)
+                {
+                    foreach (var ingredient in selectedIngredients)
+                    {
+                        int ingredientId = int.Parse(ingredient);
+                        var ingredientFromDb = db.Ingredients.FirstOrDefault(x => x.Id == ingredientId);
+                        if (ingredientFromDb != null)
+                            pizzaDaModificare.Ingredients.Add(ingredientFromDb);
+                    }
+                }
 
                 db.SaveChanges();
                 return true;
@@ -115,9 +150,9 @@ namespace PizzaMvc.Data
         {
             if (PizzaManager.CountAllPizzas() == 0)
             {
-                PizzaManager.InsertPizza(new Pizza("Margherita", "La pizza altezzosa", 5.5M));
-                PizzaManager.InsertPizza(new Pizza("Diavola", "La pizza arrabbiosa", 7M));
-                PizzaManager.InsertPizza(new Pizza("Marinara", "La pizza sabbiosa", 6.5M));
+                PizzaManager.InsertPizza(new Pizza("Margherita", "La pizza altezzosa", 5.5M), new());
+                PizzaManager.InsertPizza(new Pizza("Diavola", "La pizza arrabbiosa", 7M), new());
+                PizzaManager.InsertPizza(new Pizza("Marinara", "La pizza sabbiosa", 6.5M), new());
             }
         }
     }

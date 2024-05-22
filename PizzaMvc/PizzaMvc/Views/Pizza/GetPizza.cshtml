@@ -11,3 +11,11 @@
 <div class="row">
     <div class="col">Categoria: @Model.GetDisplayedCategory()</div>
 </div>
+@if (Model.Ingredients?.Count > 0)
+{
+    <div class="row"><div class="col"><h4>Ingredienti</h4></div></div>
+    @foreach (var ingrediente in Model.Ingredients)
+    {
+        <div class="row"><div class="col"><p class="m-0">@ingrediente.Name</p></div></div>
+    }
+}

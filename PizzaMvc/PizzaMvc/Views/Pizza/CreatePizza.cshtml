@@ -37,6 +37,17 @@
                 }
             </select>
         </div>
+        <div class="mb-3">
+            <strong>Ingredienti:</strong>
+            @for (int i = 0; i < Model.Ingredients.Count; i++)
+            {
+                <div>
+                    <input type="checkbox" name="SelectedIngredients" value="@Model.Ingredients[i].Value"
+                    @(Model.SelectedIngredients.Contains(Model.Ingredients[i].Value) ? "checked" : "") />
+                    @Model.Ingredients[i].Text
+                </div>
+            }
+        </div>
         <div class="text-end">
             <!-- La form MANDA il suo modello "compilato" alla action POST come parametro -->
             <input type="submit" class="btn btn-small btn-info" value="Inserisci">

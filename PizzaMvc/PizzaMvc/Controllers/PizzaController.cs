@@ -45,6 +45,7 @@ namespace PizzaMvc.Controllers
             Pizza p = new Pizza("Nome di default", "Descrizione base", 66.6M);
             List<Category> categories = PizzaManager.GetAllCategories();
             PizzaFormModel model = new PizzaFormModel(p, categories);
+            model.CreateIngredients();
             return View(model);
         }
 
@@ -57,10 +58,11 @@ namespace PizzaMvc.Controllers
                 // Ritorno la form di prima con i dati della pizza
                 // precompilati dall'utente
                 pizzaDaInserire.Categories = PizzaManager.GetAllCategories();
+                pizzaDaInserire.CreateIngredients();
                 return View("CreatePizza", pizzaDaInserire);
             }
 
-            PizzaManager.InsertPizza(pizzaDaInserire.Pizza);
+            PizzaManager.InsertPizza(pizzaDaInserire.Pizza, pizzaDaInserire.SelectedIngredients);
             // Richiamiamo la action Index affinché vengano mostrate tutte le pizze
             // inclusa quella nuova
             return RedirectToAction("Index");
@@ -76,6 +78,7 @@ namespace PizzaMvc.Controllers
             if (pizza == null)
                 return NotFound();
             PizzaFormModel model = new PizzaFormModel(pizza, PizzaManager.GetAllCategories());
+            model.CreateIngredients();
             return View(model);
         }
 
@@ -88,10 +91,11 @@ namespace PizzaMvc.Controllers
                 // Ritorno la form di prima con i dati della pizza
                 // precompilati dall'utente
                 pizzaDaModificare.Categories = PizzaManager.GetAllCategories();
+                pizzaDaModificare.CreateIngredients();
                 return View("UpdatePizza", pizzaDaModificare);
             }
 
-            var modified = PizzaManager.UpdatePizza(id, pizzaDaModificare.Pizza);
+            var modified = PizzaManager.UpdatePizza(id, pizzaDaModificare.Pizza, pizzaDaModificare.SelectedIngredients);
             if (modified)
             {
                 // Richiamiamo la action Index affinché vengano mostrate tutte le pizze

@@ -115,7 +115,6 @@ namespace BlogMvc.Controllers
                 postToEdit.Content = data.Post.Content;
                 postToEdit.CategoryId = data.Post.CategoryId;
                 postToEdit.Tags.Clear();
-
             });
         }
 
