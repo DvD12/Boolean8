@@ -63,6 +63,7 @@ namespace BlogMvc.Controllers
                 return View("Create", data);
             }
 
+            data.SetImageFileFromFormFile();
             PostManager.InsertPost(data.Post, data.SelectedTags);
             /*
             using (BlogContext db = new BlogContext())

@@ -54,6 +54,9 @@ namespace BlogMvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("ImageFile")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 

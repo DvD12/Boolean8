@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PizzaMvc.Data;
 using PizzaMvc.Models;
+using System.Data;
 using System.Diagnostics;
 
 namespace PizzaMvc.Controllers
 {
+    [Authorize]
     public class PizzaController : Controller
     {
         private readonly ILogger<PizzaController> _logger;
@@ -15,12 +18,14 @@ namespace PizzaMvc.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "USER,ADMIN")]
         public IActionResult Index()
         {
             return View(PizzaManager.GetAllPizzas());
         }
 
         [HttpGet]
+        [Authorize(Roles = "USER,ADMIN")]
         public IActionResult GetPizza(int id)
         {
             try
@@ -40,6 +45,7 @@ namespace PizzaMvc.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult CreatePizza() // Restituisce la form per la creazione di pizze
         {
             Pizza p = new Pizza("Nome di default", "Descrizione base", 66.6M);
@@ -51,6 +57,7 @@ namespace PizzaMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult CreatePizza(PizzaFormModel pizzaDaInserire)
         {
             if (ModelState.IsValid == false)
@@ -69,6 +76,7 @@ namespace PizzaMvc.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "ADMIN")]
         // Mi serve l'ID della pizza per:
         // 1) Indicare alla view QUALE pizza devo modificare
         // 2) Popolare la form della view coi dati della pizza che sto per modificare
@@ -84,6 +92,7 @@ namespace PizzaMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult UpdatePizza(int id, PizzaFormModel pizzaDaModificare) // Restituisce la form per la creazione di pizze
         {
             if (ModelState.IsValid == false)
@@ -123,6 +132,7 @@ namespace PizzaMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult DeletePizza(int id)
         {
             var deleted = PizzaManager.DeletePizza(id);

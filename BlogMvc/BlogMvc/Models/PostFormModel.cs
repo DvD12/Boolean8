@@ -11,6 +11,8 @@ namespace BlogMvc.Models
         public List<SelectListItem>? Tags { get; set; } // Gli elementi dei tag selezionabili per la select (analogo a Categories)
         public List<string>? SelectedTags { get; set; } // Gli ID degli elementi effettivamente selezionati
 
+        public IFormFile? ImageFormFile { get; set; } // Immagine da caricare
+
         public PostFormModel() { }
 
         public PostFormModel(Post p, List<Category> c)
@@ -36,6 +38,19 @@ namespace BlogMvc.Models
                 if (isSelected)
                     this.SelectedTags.Add(tag.Id.ToString()); // lista degli elementi selezionati
             }
+        }
+
+        // Travasa i dati di ImageFormFile in Post.ImageFile (da IFormFile a byte[])
+        public byte[] SetImageFileFromFormFile()
+        {
+            if (ImageFormFile == null)
+                return null;
+
+            using var stream = new MemoryStream();
+            this.ImageFormFile?.CopyTo(stream);
+            Post.ImageFile = stream.ToArray();
+
+            return Post.ImageFile;
         }
     }
 }

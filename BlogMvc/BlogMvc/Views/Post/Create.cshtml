@@ -4,7 +4,7 @@
 @if (User.IsInRole("Admin"))
 {
     <div class="container">
-        <form asp-controller="Post" asp-action="Create" method="post">
+        <form asp-controller="Post" asp-action="Create" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <div class="mb-3">
                 <strong>Titolo:</strong>
@@ -50,6 +50,11 @@
                         @Model.Tags[i].Text
                     </div>
                 }
+            </div>
+            <div class="form-field">
+                <img src="@Model.Post.ImgSrc">
+                <label asp-for="ImageFormFile">Image file</label>
+                <input type="file" asp-for="ImageFormFile" />
             </div>
             <div class="text-end">
                 <input type="submit" class="btn btn-small btn-info" value="Inserisci">

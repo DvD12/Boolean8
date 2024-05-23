@@ -38,6 +38,13 @@ namespace BlogMvc.Data
             return db.Posts.FirstOrDefault(p => p.Id == id);
         }
 
+        // A function that returns a Post given its name
+        public static Post GetPostByTitle(string title)
+        {
+            using BlogContext db = new BlogContext();
+            return db.Posts.FirstOrDefault(p => p.Title == title);
+        }
+
         public static Tag GetTagById(int id)
         {
             using BlogContext db = new BlogContext();

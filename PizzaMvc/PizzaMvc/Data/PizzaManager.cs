@@ -33,6 +33,12 @@ namespace PizzaMvc.Data
             return db.Pizzas.FirstOrDefault(p => p.Id == id);
         }
 
+        public static Pizza GetPizzaByName(string name)
+        {
+            using PizzaContext db = new PizzaContext();
+            return db.Pizzas.FirstOrDefault(p => p.Name == name);
+        }
+
         public static List<Category> GetAllCategories()
         {
             using PizzaContext db = new PizzaContext();
@@ -43,6 +49,7 @@ namespace PizzaMvc.Data
             using PizzaContext db = new PizzaContext();
             return db.Ingredients.ToList();
         }
+
 
         public static void InsertPizza(Pizza pizza, List<string> selectedIngredients)
         {

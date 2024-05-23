@@ -8,29 +8,37 @@
         <div class="col">@pizza.Description</div>
         <div class="col">@pizza.Price.ToString("F2")</div>
         <div class="col"><a href="@Url.Action("GetPizza", "Pizza", new { id = pizza.Id } )">GO TO</a></div>
-        <div class="col"><a href="@Url.Action("UpdatePizza", "Pizza", new { id = pizza.Id } )">EDIT</a></div>
-        <div class="col">
-            <form asp-controller="Pizza" asp-action="DeletePizza" asp-route-id="@pizza.Id" method="post">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-danger btn-sm">
-                    DELETE
+        @if (User.IsInRole("ADMIN"))
+        {
+            <div class="col">
+                <a href="@Url.Action("UpdatePizza", "Pizza", new { id = pizza.Id } )">EDIT</a>
+            </div>
+            <div class="col">
+                <form asp-controller="Pizza" asp-action="DeletePizza" asp-route-id="@pizza.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        DELETE
+                    </button>
+                </form>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#itemModal"
+                        data-id="@pizza.Id"
+                        data-name="@pizza.Name"
+                        data-action-url="@Url.Action("DeletePizza", "Pizza", new { id = pizza.Id })">
+                    Delete test
                 </button>
-            </form>
-        </div>
-        <div class="col">
-            <button type="button" class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#itemModal"
-                    data-id="@pizza.Id"
-                    data-name="@pizza.Name"
-                    data-action-url="@Url.Action("DeletePizza", "Pizza", new { id = pizza.Id })">
-                Delete test
-            </button>
-        </div>
+            </div>
+        }
     </div>
 }
 
-<a href="@Url.Action("CreatePizza", "Pizza")">CREA PIZZA</a>
+@if (User.IsInRole("ADMIN"))
+{
+    <a href="@Url.Action("CreatePizza", "Pizza")">CREA PIZZA</a>
+}
 
 <div id="itemModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

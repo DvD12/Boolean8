@@ -16,6 +16,9 @@ namespace BlogMvc.Models
         public Category? Category { get; set; }
 
         public List<Tag>? Tags { get; set; }
+        
+        public byte[]? ImageFile { get; set; }
+        public string ImgSrc => ImageFile != null ? $"data:image/png;base64,{Convert.ToBase64String(ImageFile)}" : "";
 
         public Post()
         {

@@ -25,6 +25,12 @@
         </div>
     </div>
 </div>
+@if (Model.ImgSrc != null)
+{
+    <div class="image">
+        <img src="@Model.ImgSrc" />
+    </div>
+}
 <div class="row">
     <div class="col"><a href="@Url.Action("Index", "Post")">BACK</a></div>
 </div>
