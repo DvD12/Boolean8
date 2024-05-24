@@ -14,7 +14,7 @@ namespace BlogMvc.Controllers
         {
             if (name == null)
                 return Ok(PostManager.GetAllPosts());
-            return Ok(PostManager.GetAllPosts()); // TODO ritorna soltanto i post che contengono name nel titolo
+            return Ok(PostManager.GetPostsByTitle(name)); // ritorna soltanto i post che contengono name nel titolo
         }
 
         [HttpGet]
@@ -29,7 +29,7 @@ namespace BlogMvc.Controllers
         [HttpGet("{name}")]
         public IActionResult GetPostByTitle(string name) // PATH PARAM https://.../api/Postwebapi/getPostbyTitle/post1
         {
-            var Post = PostManager.GetPostByTitle(name);
+            var Post = PostManager.GetPostsByTitle(name);
             if (Post == null)
                 return NotFound("ERRORE");
             return Ok(Post);

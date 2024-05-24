@@ -1,0 +1,84 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex justify-content-center align-items-center">
+                <h1>Lista post</h1>
+                <input class="js_search" placeholder="Cerca per titolo" />
+            </div>
+        </div>
+    </div>
+    <div class="row js_no_post d-none">
+        <div class="col">
+            <h3>Non hai inserito alcun post</h3>
+        </div>
+    </div>
+    <div class="row js_post_table d-none">
+        <!-- Qui inseriamo i post -->
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="@Url.Action("Create", "Home")" class="btn btn-primary">Crea post</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    function loadList(nameFilter)
+    {
+        axios.get('api/PostWeb/GetAllPosts',
+            {
+                params:
+                {
+                    name: nameFilter
+                }
+            }).then((res) =>
+            {
+                if (res.data.length == 0) // Non abbiamo nessun post
+                { 
+                    document.querySelector('.js_no_post').classList.remove('d-none');
+                    document.querySelector('.js_post_table').classList.add('d-none');
+                }
+                else
+                {
+                    document.querySelector('.js_no_post').classList.add('d-none');
+                    var postTable = document.querySelector('.js_post_table');
+                    postTable.classList.remove('d-none');
+
+                    postTable.innerHTML = '';
+                    res.data.forEach((post) => {
+                        console.log(post);
+                        postTable.innerHTML += `
+                            <div class="col">
+                                <img src="${post.imgSrc}" />
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${post.title}</h5>
+                                        <p class="card-text">${post.content}</p>
+                                    </div>
+                                    <div class="btn btn-danger" onclick="deleteById(${post.id})">Elimina</div>
+                                </div>
+                            </div>`;
+                    });
+                }
+            });
+    }
+
+    function deleteById(id) { 
+        axios.delete("/api/PostWeb/DeletePost/" + id)
+            .then((res) => {
+                loadList('');
+            });
+    }
+
+    loadList('');
+
+    function search() {
+
+        console.log(this.value);
+        loadList(this.value);
+    }
+
+    document.querySelector('.js_search').addEventListener('keyup', search)
+</script>

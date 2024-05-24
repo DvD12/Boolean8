@@ -9,11 +9,12 @@ namespace PizzaMvc.Controllers
     [ApiController]
     public class PizzaWebApiController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAllPizzas()
+        [HttpGet("{name?}")]
+        public IActionResult GetAllPizzas(string? name = "")
         {
-            var pizzas = PizzaManager.GetAllPizzas();
-            return Ok(pizzas);
+            if (string.IsNullOrWhiteSpace(name))
+                return Ok(PizzaManager.GetAllPizzas());
+            return Ok(PizzaManager.GetPizzasByName(name));
         }
 
         [HttpGet]
@@ -21,7 +22,7 @@ namespace PizzaMvc.Controllers
         {
             var pizza = PizzaManager.GetPizza(id);
             if (pizza == null)
-                return NotFound("ERRORE");
+                return NotFound("Pizza non trovata!");
             return Ok(pizza);
         }
 
@@ -30,7 +31,7 @@ namespace PizzaMvc.Controllers
         {
             var pizza = PizzaManager.GetPizzaByName(name);
             if (pizza == null)
-                return NotFound("ERRORE");
+                return NotFound("Pizza non trovata!");
             return Ok(pizza);
         }
 
@@ -39,7 +40,7 @@ namespace PizzaMvc.Controllers
         // (come documento JSON che il framework deserializzerà automaticamente in oggetto di tipo Pizza)
         public IActionResult CreatePizza([FromBody] Pizza pizza)
         {
-            PizzaManager.InsertPizza(pizza, null);
+            PizzaManager.InsertPizza(pizza, null); // pizza.Ingredients.Select(x => x.Id.ToString()).ToList());
             return Ok();
         }
 
@@ -49,7 +50,7 @@ namespace PizzaMvc.Controllers
             var oldPizza = PizzaManager.GetPizza(id);
             if (oldPizza == null)
                 return NotFound("ERRORE");
-            PizzaManager.UpdatePizza(id, pizza, null);
+            PizzaManager.UpdatePizza(id, pizza, null); // pizza.Ingredients.Select(x => x.Id.ToString()).ToList());
             return Ok();
         }
 

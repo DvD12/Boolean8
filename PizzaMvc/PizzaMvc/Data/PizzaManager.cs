@@ -39,6 +39,13 @@ namespace PizzaMvc.Data
             return db.Pizzas.FirstOrDefault(p => p.Name == name);
         }
 
+        public static List<Pizza> GetPizzasByName(string name)
+        {
+            using PizzaContext db = new PizzaContext();
+
+            return db.Pizzas.Where(p => p.Name == name).ToList();
+        }
+
         public static List<Category> GetAllCategories()
         {
             using PizzaContext db = new PizzaContext();

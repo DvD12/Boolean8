@@ -1,0 +1,43 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col"><h1>Crea post</h1></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form onsubmit="creaPost(event)" method="post">
+                <div class="mb-3">
+                    <strong>Titolo:</strong>
+                    <input id="PostTitle" type="text" class="d-block w-100" />
+                </div>
+                <div class="mb-3">
+                    <strong>Contenuto:</strong>
+                    <input id="PostContent" type="text" class="d-block w-100 is-invalid" />
+                </div>
+                <div class="mb-3">
+                    <input type="submit" class="btn btn-success" value="Crea" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    function creaPost(evt) {
+        evt.preventDefault();
+        var title = document.getElementById('PostTitle').value;
+        var content = document.getElementById('PostContent').value;
+
+        axios.post('/api/PostWeb/CreatePost', {
+            title: title,
+            content: content
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+</script>
