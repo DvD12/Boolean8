@@ -2,9 +2,13 @@
 @using BlogMvc.Data
 @model List<Post>
 
+<input type="text" id="Filter" placeholder="Filtra per titolo" />
+
 @foreach (var post in Model)
 {
-    <div class="row">
+    <div class="row MyPost">
+        <div class="filter-text d-none">@post.Title</div>
+
         <div class="col"><h3>@post.Title</h3></div>
         <div class="col">@post.Timestamp.ToString("yyyy/MM/dd HH:mm")</div>
         <!-- <div class="col">@($"{Extensions.SafeSubstring(post.Content, 20)}...")</div> -->
@@ -27,3 +31,19 @@
         <a href="@Url.Action("Create", "Post")">CREA NUOVO POST</a>
     </div>
 </div>
+
+<script>
+    document.getElementById('Filter').addEventListener('keyup', function () {
+        var filter = this.value.toLowerCase();
+        var posts = document.querySelectorAll('.MyPost');
+
+        posts.forEach(function (post) {
+            var title = post.querySelector('.filter-text').innerText.toLowerCase();
+            if (title.includes(filter)) {
+                post.classList.remove('d-none');
+            } else {
+                post.classList.add('d-none');
+            }
+        });
+    });
+</script>

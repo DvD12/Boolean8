@@ -10,7 +10,7 @@ namespace PizzaMvc.Controllers
     public class PizzaWebApiController : ControllerBase
     {
         [HttpGet("{name?}")]
-        public IActionResult GetAllPizzas(string? name = "")
+        public IActionResult GetAllPizzas(string? name = "") // .../GetAllPizzas/margherita
         {
             if (string.IsNullOrWhiteSpace(name))
                 return Ok(PizzaManager.GetAllPizzas());
@@ -40,6 +40,10 @@ namespace PizzaMvc.Controllers
         // (come documento JSON che il framework deserializzerà automaticamente in oggetto di tipo Pizza)
         public IActionResult CreatePizza([FromBody] Pizza pizza)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             PizzaManager.InsertPizza(pizza, null); // pizza.Ingredients.Select(x => x.Id.ToString()).ToList());
             return Ok();
         }

@@ -1,0 +1,39 @@
+﻿<form onsubmit="createPizza(event)" method="post">
+    <div>
+        <b>Nome:</b>
+        <input id="PizzaName" type="text" />
+    </div>
+    <div>
+        <b>Descrizione:</b>
+        <input id="PizzaDescription" type="text" />
+    </div>
+    <div>
+        <b>Prezzo:</b>
+        <input id="PizzaPrice" type="text" />
+    </div>
+    <div>
+        <input type="submit" value="Crea pizza" />
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    function createPizza(evt)
+    {
+        evt.preventDefault();
+        const name = document.getElementById('PizzaName').value;
+        const description = document.getElementById('PizzaDescription').value;
+        const price = document.getElementById('PizzaPrice').value;
+
+        axios.post('/api/PizzaWebApi/CreatePizza',
+        { // body della richiesta
+            name: name,
+            description: description,
+            price: price
+        }).then(res =>
+            {
+            console.log(res);
+            });
+    }
+</script>

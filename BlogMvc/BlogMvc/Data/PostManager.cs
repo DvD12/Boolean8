@@ -14,8 +14,15 @@ namespace BlogMvc.Data
 
         public static List<Post> GetAllPosts()
         {
-            using BlogContext db = new BlogContext();
-            return db.Posts.ToList();
+            try
+            {
+                using BlogContext db = new BlogContext();
+                return db.Posts.ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public static List<Category> GetAllCategories()

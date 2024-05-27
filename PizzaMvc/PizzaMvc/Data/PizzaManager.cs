@@ -43,7 +43,8 @@ namespace PizzaMvc.Data
         {
             using PizzaContext db = new PizzaContext();
 
-            return db.Pizzas.Where(p => p.Name == name).ToList();
+            // Rendo la ricerca case-insensitive convertendo tutto in minuscole
+            return db.Pizzas.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList();
         }
 
         public static List<Category> GetAllCategories()
